@@ -4,7 +4,7 @@
  * @param keys e.g. "ctrl+shift+m"
  * @returns exit code
  */
-import { spawnSync } from "node:child_process";
+import { spawnSync } from "child_process";
 
 export function sendHotkey(keys: string): number {
   const res = spawnSync("xdotool", ["key", keys], { stdio: "inherit" });

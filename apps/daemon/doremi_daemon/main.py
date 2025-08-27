@@ -8,7 +8,7 @@ from typing import List
 import numpy as np
 import yaml
 
-from .audio import stream_frames, record_seconds, play_confirm_sound
+from .audio import stream_frames, play_confirm_sound
 from .vad import VADGate
 from .actions import dispatch
 from .hotword_template import TemplateWakeword
@@ -111,8 +111,14 @@ def main() -> None:
             print(f"[wake] '{label}' score={score:.2f}")
 
             if fc_enabled and cmd_rec is not None and cmd_rec.db:
-                # Capture a short command window and classify
-                cmd_int16 = record_seconds(seconds=fc_window_sec, sample_rate=sr, device=device)
+                # Capture a short command window and classify using the existing stream
+                needed_frames = int(np.ceil((fc_window_sec * 1000.0) / frame_ms))
+                collected: list[np.ndarray] = []
+                for _ in range(needed_frames):
+                    next_frame = next(frames_iter)
+                    # Do not VAD-gate this capture; we want the raw command window
+                    collected.append(next_frame)
+                cmd_int16 = np.concatenate(collected, axis=0).astype(np.int16)
                 cmd_f32 = int16_to_float32(cmd_int16)
                 lab, cscore = cmd_rec.best_label(cmd_f32)
                 if lab is not None:

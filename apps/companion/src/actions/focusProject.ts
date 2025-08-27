@@ -4,7 +4,7 @@
  * 2) Fallback to alt list (e.g., VS Code class names)
  * 3) Optionally match window title containing a project path hint
  */
-import { spawnSync } from "node:child_process";
+import { spawnSync } from "child_process";
 
 type FocusArgs = {
   prefer: string[];     // e.g., ["Windsurf"]
@@ -23,10 +23,10 @@ export function focusProject(args: FocusArgs): number {
   const list = spawnSync("wmctrl", ["-lx"], { encoding: "utf8" });
   if (list.status !== 0) return list.status ?? 1;
 
-  const rows = (list.stdout || "").split("\n").filter(Boolean);
+  const rows: string[] = (list.stdout || "").split("\n").filter(Boolean);
 
   const findMatch = (keys: string[]) =>
-    rows.find((line) => keys.some((k) => line.toLowerCase().includes(k.toLowerCase())));
+    rows.find((line: string) => keys.some((k) => line.toLowerCase().includes(k.toLowerCase())));
 
   const tryKeys: string[][] = [];
   if (args.prefer?.length) tryKeys.push(args.prefer);
@@ -42,7 +42,7 @@ export function focusProject(args: FocusArgs): number {
   }
 
   if (!chosen && args.projectHint) {
-    chosen = rows.find((r) => r.includes(args.projectHint!)) ?? "";
+    chosen = rows.find((r: string) => r.includes(args.projectHint!)) ?? "";
   }
   if (!chosen) {
     console.error("No window match for focus.");
