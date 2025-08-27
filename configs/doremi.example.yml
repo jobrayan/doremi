@@ -1,0 +1,58 @@
+mic:
+  device: default
+  sample_rate: 16000
+  frame_ms: 30
+
+wakeword:
+  engine: "template"
+  label: "doremi"
+  sensitivity: 0.6
+  enroll:
+    samples_required: 5
+    template_dir: "templates"
+
+vad:
+  enabled: true
+  aggressiveness: 2
+
+follow_command:
+  enabled: true
+  window_seconds: 1.2
+  sensitivity: 0.65
+  default_on_uncertain: "ide:record"
+  map:
+    record: "ide:record"
+    focus: "project:focus"
+    note: "record-and-transcribe"
+    stop: "system:noop"
+
+actions_on_detect:
+  - "project:focus"
+  - "ide:record"
+
+actions:
+  project:focus:
+    kind: "companion"
+    command: "project:focus"
+    args:
+      - "--prefer"
+      - "Windsurf"
+      - "--alt"
+      - "Code - OSS,code,Code"
+      - "--project"
+      - "/home/you/dev"
+  ide:record:
+    kind: "companion"
+    command: "ide:hotkey"
+    args:
+      - "--keys"
+      - "ctrl+shift+m"
+  record-and-transcribe:
+    kind: "builtin"
+    record_seconds: 20
+    save_wav_to: "/tmp/doremi_last.wav"
+    stt:
+      engine: "faster-whisper"
+      model: "tiny"
+      compute_type: "int8"
+      output_json: "/tmp/doremi_last.json"

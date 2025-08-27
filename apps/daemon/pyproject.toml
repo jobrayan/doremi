@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "doremi-daemon"
+version = "0.1.0"
+description = "doremi wakeword daemon: local template wakeword + actions"
+requires-python = ">=3.10"
+dependencies = [
+  "sounddevice>=0.4",
+  "soundfile>=0.12",
+  "numpy>=1.24",
+  "webrtcvad>=2.0.10",
+  "librosa>=0.10",
+  "simpleaudio>=1.0.4",
+  "pyyaml>=6.0",
+  "requests>=2",
+  "faster-whisper>=1.0"
+]
+
+[tool.setuptools]
+packages = ["doremi_daemon"]
