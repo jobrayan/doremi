@@ -5,7 +5,7 @@ After=sound.target
 [Service]
 Type=simple
 WorkingDirectory=/opt/doremi
-ExecStart=/usr/bin/python3 -m doremi_daemon.main -c configs/doremi.yml
+ExecStart=/opt/doremi/.venv/bin/python -m doremi_daemon.main -c configs/doremi.yml
 Restart=on-failure
 Environment=PYTHONUNBUFFERED=1
 User=%i
